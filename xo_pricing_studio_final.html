@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>XO · Pricing Studio – Final</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    :root{
+      --bg:#07080f; --panel:#0d0f18; --panel-soft:#121528; --ink:#f5f7ff; --ink2:#e6e9fb; --muted:#a3aac2;
+      --border:#232740; --accent:#caff3b; --pos:#74ffa9; --warn:#ffd86a; --neg:#ff7f96; --chip:#171b30;
+      --barbg:#13172a; --barfg:#4eff9f; --barfg2:#ffd45b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(1000px 600px at 8% -10%,#1d2149 0,#0a0c16 55%,#07080f 100%);
+      color:var(--ink);
+    }
+    header{
+      position:sticky;top:0;z-index:20;padding:14px 16px 10px;
+      background:rgba(9,10,18,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+    }
+    h1{margin:0 0 4px;font-size:20px;font-weight:650;letter-spacing:.03em}
+    .sub{color:var(--muted);font-size:12px}
+    main{max-width:1120px;margin:0 auto;padding:14px 14px 28px;display:grid;gap:14px}
+
+    .toolbar{display:grid;grid-template-columns:1.2fr 1.5fr 1.1fr;gap:12px}
+    @media(max-width:960px){.toolbar{grid-template-columns:1fr}}
+
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 14px;box-shadow:0 16px 30px rgba(0,0,0,.35)}
+    .card h2{margin:0 0 8px;font-size:15px;color:var(--ink2)}
+
+    label{font-size:12px;color:var(--muted);margin:4px 0 2px;display:block}
+    input,select,button{
+      width:100%;background:#090d1a;color:var(--ink);border:1px solid var(--border);
+      border-radius:10px;padding:7px 9px;font-size:13px;
+    }
+    input:focus,select:focus{outline:1px solid var(--accent);border-color:var(--accent)}
+
+    .grid{display:grid;gap:8px}
+    .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-end}
+    .btn{cursor:pointer;border:1px solid var(--border);background:#0c0f1c;font-size:12px;padding:6px 10px;border-radius:999px}
+    .btn.primary{background:linear-gradient(90deg,#d8ff4a,#9bff1f);color:#05060b;font-weight:700}
+
+    .products{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:1440px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+    .p-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:grid;gap:10px}
+    .p-head{display:flex;flex-direction:column;gap:8px}
+    .p-row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+    .p-row>div{flex:1 1 170px}
+    .p-title input{font-weight:600}
+    .price{font-size:18px;font-weight:600;text-align:left}
+
+    .pill-row{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;color:var(--muted)}
+    .pill{padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#171b30}
+
+    .metrics-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .metric{background:#0b0e1a;border:1px solid var(--border);border-radius:12px;padding:7px 9px}
+    .metric .label{font-size:11px;color:var(--muted)}
+    .metric .value{font-size:15px;font-weight:650}
+
+    .chip{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;border:1px solid var(--border);background:var(--chip);font-size:11px}
+    .chip.good{border-color:#2fd58a;color:#b4ffd6}
+    .chip.warn{border-color:#e0b949;color:#ffe9a9}
+    .chip.bad{border-color:#ff4a6a;color:#ffc0cc}
+
+    .bar{height:6px;background:var(--barbg);border-radius:999px;overflow:hidden;margin-top:4px}
+    .bar-fill{height:100%;background:var(--barfg);width:0%}
+    .bar-fill.cm2{background:var(--barfg2)}
+
+    .details{background:var(--panel-soft);border-radius:12px;border:1px solid var(--border);padding:8px 10px;display:none}
+    .details-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+
+    .muted{color:var(--muted);font-size:12px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  </style>
+</head>
+<body>
+<header>
+  <h1>XO · Pricing Studio – Final</h1>
+  <div class="sub">List in CAD or USD, apply discount %, and see CM1/CM2, profit per unit, and BNPL for each SKU. Suggest adjusts price to hit CM2 at your CAC.</div>
+</header>
+
+<main>
+  <section class="toolbar">
+    <div class="card">
+      <h2>1 · Tier targets</h2>
+      <div class="grid cols-3">
+        <div><label>CZ CM1/CM2</label><input id="t_cz" value="60/30"></div>
+        <div><label>Moissanite CM1/CM2</label><input id="t_moi" value="55/27"></div>
+        <div><label>Elliante CM1/CM2</label><input id="t_el" value="50/25"></div>
+      </div>
+      <p class="muted" style="margin-top:4px">CM1 = pre‑ad margin (%). CM2 = after‑ads margin (%). Defaults reflect your CZ / Moissanite / Elliante ladder.</p>
+    </div>
+
+    <div class="card">
+      <h2>2 · Globals & fees</h2>
+      <div class="grid cols-3">
+        <div><label>Base currency</label><select id="base"><option value="CAD" selected>CAD</option><option value="USD">USD</option></select></div>
+        <div><label>FX 1 CAD → USD</label><input id="fx" type="number" step="0.0001" value="0.74"></div>
+        <div><label>Pack+Ship per order (CAD)</label><input id="pack" type="number" step="0.01" value="13"></div>
+      </div>
+      <div class="grid cols-3" style="margin-top:6px">
+        <div><label>Shopify %</label><input id="s_pct" type="number" step="0.01" value="2.9"></div>
+        <div><label>Shopify fixed</label><input id="s_fix" type="number" step="0.01" value="0.30"></div>
+        <div><label>Avg CAC (ads per sale)</label><input id="cac" type="number" step="0.01" value="25"></div>
+      </div>
+      <details style="margin-top:8px">
+        <summary class="muted">Advanced Etsy fees (calibrated)</summary>
+        <div class="grid cols-3" style="margin-top:6px">
+          <div><label>Etsy listing fee</label><input id="e_list" type="number" step="0.01" value="0.20"></div>
+          <div><label>Etsy base % (fees+processing+reg/VAT)</label><input id="e_basepct" type="number" step="0.1" value="14.2"></div>
+          <div><label>Offsite Ads %</label><input id="e_off" type="number" step="0.1" value="12"></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>3 · Actions & KPIs</h2>
+      <div class="actions">
+        <button class="btn" id="add">+ Add product</button>
+        <button class="btn" id="suggestAll">Suggest for all</button>
+        <button class="btn primary" id="export">Export CSV</button>
+      </div>
+      <div class="grid cols-3" style="margin-top:8px">
+        <div class="metric"><div class="label">Lowest profit after CAC</div><div class="value" id="k_min">–</div></div>
+        <div class="metric"><div class="label">Average profit after CAC</div><div class="value" id="k_avg">–</div></div>
+        <div class="metric"><div class="label">% SKUs hitting CM2</div><div class="value" id="k_pass">–</div></div>
+      </div>
+      <p class="muted" id="tierSummary" style="margin-top:6px">Tier summary will appear here.</p>
+    </div>
+  </section>
+
+  <section id="products" class="products"></section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function getBase(){ return $('#base').value; }
+
+function parseTarget(txt, fb){ const m=(txt||'').split('/').map(v=>parseFloat(v)); return {cm1:m[0]||fb.cm1, cm2:m[1]||fb.cm2}; }
+function getTargets(){
+  return {
+    CZ: parseTarget($('#t_cz').value,{cm1:60,cm2:30}),
+    Moissanite: parseTarget($('#t_moi').value,{cm1:55,cm2:27}),
+    Elliante: parseTarget($('#t_el').value,{cm1:50,cm2:25})
+  };
+}
+
+function money(n){ return isFinite(n)? n.toFixed(2):'–'; }
+function prestigeRoundUp(p){ return p<1000 ? Math.ceil((p+1)/10)*10 - 1 : Math.ceil((p+1)/100)*100 - 1; }
+function cleanRoundUp(p){ return Math.ceil(p/50)*50; }
+function charmRoundUp(p){ return Math.ceil(p) - 0.01 + 1; }
+function roundPrice(p,style){ if(style==='clean')return cleanRoundUp(p); if(style==='charm')return charmRoundUp(p); return prestigeRoundUp(p); }
+
+function feeShopify(P,sPct,sFix){ return sFix + sPct*P; }
+function feeEtsy(P,listFee,basePct,offPct){
+  const percent = basePct + offPct; // base + any Offsite %
+  return listFee + percent*P;
+}
+
+function pctChip(v,t){ const cls=v>=t?'good':(v>=t*0.8?'warn':'bad'); return `<span class="chip ${cls}">${Math.round(v)}% / ${t}%</span>`; }
+function fillBar(el,v){ el.style.width=Math.max(0,Math.min(100,v))+'%'; }
+
+function productCard(d){
+  const card=document.createElement('div'); card.className='p-card';
+  card.innerHTML=`
+    <div class="p-head">
+      <div class="p-row">
+        <div class="p-title"><label>Product</label><input class="prod" value="${d.prod||''}"></div>
+        <div class="p-title"><label>Variant</label><input class="vari" value="${d.var||''}"></div>
+      </div>
+      <div class="p-row">
+        <div><label>Tier</label><select class="tier"><option ${d.tier==='CZ'?'selected':''}>CZ</option><option ${d.tier==='Moissanite'?'selected':''}>Moissanite</option><option ${d.tier==='Elliante'?'selected':''}>Elliante</option></select></div>
+        <div><label>Platform</label><select class="platform"><option ${d.platform==='Shopify'?'selected':''}>Shopify</option><option ${d.platform==='Etsy (no Offsite)'?'selected':''}>Etsy (no Offsite)</option><option ${d.platform==='Etsy (Offsite)'?'selected':''}>Etsy (Offsite)</option></select></div>
+        <div><label>Discount %</label><input class="disc" type="number" step="0.1" value="${d.disc||0}"></div>
+      </div>
+      <div class="p-row">
+        <div><label>List price</label><input class="price" type="number" step="0.01" value="${d.price||0}"></div>
+      </div>
+      <div class="p-row">
+        <div><label>Pendant (CAD)</label><input class="pcad" type="number" step="0.01" value="${d.pcad||0}"></div>
+        <div><label>Chain (CAD)</label><input class="ccad" type="number" step="0.01" value="${d.ccad||0}"></div>
+        <div><label>Other (CAD)</label><input class="ocad" type="number" step="0.01" value="${d.oad||0}"></div>
+      </div>
+      <div class="pill-row">
+        <span class="pill">Rounding
+          <select class="round">
+            <option value="prestige" ${!d.round||d.round==='prestige'?'selected':''}>Prestige 9s</option>
+            <option value="clean" ${d.round==='clean'?'selected':''}>Clean 00/50</option>
+            <option value="charm" ${d.round==='charm'?'selected':''}>Charm .99</option>
+          </select>
+        </span>
+        <span class="pill"><button class="btn suggest">Suggest</button><span class="muted" style="margin-left:4px">hits CM2 target at your CAC (discount-aware)</span></span>
+      </div>
+    </div>
+    <div class="metrics-row">
+      <div class="metric"><div class="label">CM1 (pre‑ad)</div><div class="value cm1">–</div><div class="bar"><div class="bar-fill cm1bar"></div></div></div>
+      <div class="metric"><div class="label">CM2 (after‑ads)</div><div class="value cm2">–</div><div class="bar"><div class="bar-fill cm2bar cm2"></div></div></div>
+      <div class="metric"><div class="label">Profit after CAC (discounted)</div><div class="value afterv">–</div></div>
+      <div class="metric"><div class="label">BNPL 4× (discounted)</div><div class="value bnplv">–</div></div>
+    </div>
+    <button class="btn small toggle">Show details</button>
+    <div class="details">
+      <div class="details-grid">
+        <div><label>Total cost CAD incl. pack</label><div class="mono totalcad">–</div></div>
+        <div><label>Effective price (after discount)</label><div class="mono effprice">–</div></div>
+        <div><label>Landed (base)</label><div class="mono landed">–</div></div>
+        <div><label>Fees</label><div class="mono fees">–</div></div>
+        <div><label>Pre‑Ad $</label><div class="mono pread">–</div></div>
+        <div><label>After CAC $</label><div class="mono after">–</div></div>
+      </div>
+      <p class="muted explain">Suggest formula will appear here.</p>
+      <p class="muted diag">–</p>
+      <div style="text-align:right;margin-top:6px"><button class="btn small remove">Remove</button></div>
+    </div>`;
+
+  card.querySelectorAll('input,select').forEach(el=> el.addEventListener('input',()=>{compute();saveState();}));
+  card.querySelector('.toggle').addEventListener('click',()=>{
+    const d=card.querySelector('.details'); const open=d.style.display==='block';
+    d.style.display=open?'none':'block'; card.querySelector('.toggle').textContent=open?'Show details':'Hide details';
+  });
+  card.querySelector('.remove').addEventListener('click',()=>{card.remove();compute();saveState();});
+  card.querySelector('.suggest').addEventListener('click',()=>{suggestPrice(card);});
+  return card;
+}
+
+function suggestPrice(card){
+  const base=getBase();
+  const fx=parseFloat($('#fx').value)||0.74; const pack=parseFloat($('#pack').value)||0;
+  const sPct=(parseFloat($('#s_pct').value)||0)/100; const sFix=parseFloat($('#s_fix').value)||0;
+  const eBasePct=(parseFloat($('#e_basepct').value)||0)/100; const eList=parseFloat($('#e_list').value)||0; const eOffPct=(parseFloat($('#e_off').value)||0)/100;
+  const CAC=parseFloat($('#cac').value)||0;
+  const targets=getTargets(); const tier=card.querySelector('.tier').value; const t=targets[tier]; const T=t.cm2/100;
+  const plat=card.querySelector('.platform').value; const round=card.querySelector('.round').value;
+  const pcad=parseFloat(card.querySelector('.pcad').value)||0; const ccad=parseFloat(card.querySelector('.ccad').value)||0; const ocad=parseFloat(card.querySelector('.ocad').value)||0;
+  const disc=parseFloat(card.querySelector('.disc').value)||0; const r=1-disc/100; if(r<=0){alert('Discount % must be <100.');return;}
+  const totalCad=pcad+ccad+ocad+pack; const landed=(base==='USD')? totalCad*fx: totalCad;
+
+  // We solve for discounted price P, not list; list = P / r.
+  let a=0,b=0;
+  if(plat==='Shopify'){
+    a=sFix; b=sPct;
+  }else{
+    const useOff=plat.includes('Offsite')?eOffPct:0;
+    a=eList; b=eBasePct+useOff;
+  }
+
+  // CM2 equation: (P - (a + bP) - landed - CAC) / P = T
+  // => P*(1 - b - T) = a + landed + CAC
+  const den=1 - b - T;
+  if(den<=0){alert('Targets + fees too aggressive. Lower CM2 target or adjust fees.');return;}
+  const P=(a + landed + CAC)/den;
+  const listNeeded=P / r;
+  const rounded=roundPrice(listNeeded,round);
+
+  card.querySelector('.price').value=rounded.toFixed(2);
+  const cur=base==='USD'?'$':'CA$';
+  const explain=`CM2 target ${t.cm2}% with discount ${disc.toFixed(1)}% → need discounted price ${cur}${money(P)}. List = P / (1-d) = ${cur}${money(listNeeded)} → rounded to ${cur}${rounded.toFixed(2)} (${round}).`;
+  card.querySelector('.explain').textContent=explain;
+  compute();saveState();
+}
+
+function compute(){
+  const base=getBase(); const fx=parseFloat($('#fx').value)||0.74; const pack=parseFloat($('#pack').value)||0;
+  const sPct=(parseFloat($('#s_pct').value)||0)/100; const sFix=parseFloat($('#s_fix').value)||0;
+  const eBasePct=(parseFloat($('#e_basepct').value)||0)/100; const eList=parseFloat($('#e_list').value)||0; const eOffPct=(parseFloat($('#e_off').value)||0)/100;
+  const CAC=parseFloat($('#cac').value)||0; const targets=getTargets();
+  let minAfter=Infinity,sumAfter=0,count=0,passCount=0;
+  const agg={CZ:{n:0,cm2:[],after:[]},Moissanite:{n:0,cm2:[],after:[]},Elliante:{n:0,cm2:[],after:[]}};
+
+  $$('#products .p-card').forEach(card=>{
+    const tier=card.querySelector('.tier').value; const t=targets[tier]; const plat=card.querySelector('.platform').value;
+    const listPrice=parseFloat(card.querySelector('.price').value)||0; const disc=parseFloat(card.querySelector('.disc').value)||0; const r=1-disc/100; const P=listPrice*r;
+    const pcad=parseFloat(card.querySelector('.pcad').value)||0; const ccad=parseFloat(card.querySelector('.ccad').value)||0; const ocad=parseFloat(card.querySelector('.ocad').value)||0;
+    const totalCad=pcad+ccad+ocad+pack; const landed=(base==='USD')? totalCad*fx: totalCad;
+
+    let fees=0;
+    if(plat==='Shopify') fees=feeShopify(P,sPct,sFix);
+    else{ const useOff=plat.includes('Offsite')?eOffPct:0; fees=feeEtsy(P,eList,eBasePct,useOff); }
+
+    const pre=P - fees - landed; const after=pre - CAC;
+    const cm1=P? pre/P*100 : 0; const cm2=P? after/P*100 : 0;
+    const cur=base==='USD'?'$':'CA$';
+
+    card.querySelector('.cm1').innerHTML=pctChip(cm1,t.cm1);
+    card.querySelector('.cm2').innerHTML=pctChip(cm2,t.cm2);
+    fillBar(card.querySelector('.cm1bar'),cm1);
+    fillBar(card.querySelector('.cm2bar'),cm2);
+    const afterLabel=after<0? `LOSS ${cur}${money(after)}` : cur+money(after);
+    card.querySelector('.afterv').textContent=afterLabel;
+    card.querySelector('.afterv').style.color=after<0?'#ff7f96':'#f5f7ff';
+    card.querySelector('.bnplv').textContent=P? `${cur}${money(P/4)} × 4`:'–';
+
+    const det=card.querySelector('.details');
+    det.querySelector('.totalcad').textContent=money(totalCad);
+    det.querySelector('.effprice').textContent=cur+money(P);
+    det.querySelector('.landed').textContent=cur+money(landed);
+    det.querySelector('.fees').textContent=cur+money(fees);
+    det.querySelector('.pread').textContent=cur+money(pre);
+    det.querySelector('.after').textContent=afterLabel;
+
+    let diag='';
+    if(after<0) diag='LOSS: CM2 < 0% – raise list price, lower discount, or reduce CAC.';
+    else if(cm2<t.cm2) diag='CM2 below target – current discounted price + CAC too aggressive.';
+    else if(cm1<t.cm1) diag='CM1 below target – landed cost high vs discounted price.';
+    else diag='Healthy: CM1 & CM2 meet or exceed targets.';
+    det.querySelector('.diag').textContent=diag;
+
+    if(isFinite(after)){minAfter=Math.min(minAfter,after);sumAfter+=after;count++;}
+    if(cm2>=t.cm2) passCount++;
+    agg[tier].n++; agg[tier].cm2.push(cm2); agg[tier].after.push(after);
+  });
+
+  const cur=base==='USD'?'$':'CA$';
+  $('#k_min').textContent=count? cur+money(minAfter):'–';
+  $('#k_avg').textContent=count? cur+money(sumAfter/count):'–';
+  $('#k_pass').textContent=count? Math.round(passCount*100/count)+'%':'–';
+
+  const parts=[]; Object.entries(agg).forEach(([tier,v])=>{ if(!v.n)return; const avgCm2=v.cm2.reduce((a,b)=>a+b,0)/v.cm2.length; const minAfterTier=Math.min(...v.after); parts.push(`${tier}: ${v.n} SKUs • avg CM2 ${avgCm2.toFixed(1)}% • min after‑CAC ${cur+money(minAfterTier)}`); });
+  $('#tierSummary').textContent=parts.length? parts.join('   |   '):'Tier summary will appear here.';
+}
+
+function addProductRow(d){ $('#products').appendChild(productCard(d||{})); }
+
+function resetXO(){
+  $('#products').innerHTML='';
+  addProductRow({prod:'XO Elliante Moissanite',var:'Pendant + Rope 6mm 22"',tier:'Elliante',platform:'Shopify',pcad:569.48,ccad:15.00,oad:0,price:749,disc:0});
+  addProductRow({prod:'XO Elliante Moissanite',var:'Pendant + Tennis 3mm 22"',tier:'Elliante',platform:'Shopify',pcad:569.48,ccad:186.65,oad:0,price:999,disc:0});
+  addProductRow({prod:'XO Elliante Moissanite',var:'Pendant + Tennis 4mm 22"',tier:'Elliante',platform:'Shopify',pcad:569.48,ccad:252.75,oad:0,price:1099,disc:0});
+  addProductRow({prod:'XO Elliante Moissanite',var:'Pendant + Tennis 5mm 22"',tier:'Elliante',platform:'Shopify',pcad:569.48,ccad:269.62,oad:0,price:1149,disc:0});
+  addProductRow({prod:'XO Elliante Moissanite',var:'Pendant + Tennis 6.5mm 22"',tier:'Elliante',platform:'Shopify',pcad:569.48,ccad:372.00,oad:0,price:1299,disc:0});
+  addProductRow({prod:'Timeless XO Moissanite',var:'Pendant + Cuban 4mm 22"',tier:'Moissanite',platform:'Shopify',pcad:116.28,ccad:32.55,oad:0,price:379,disc:0});
+  addProductRow({prod:'Timeless XO Moissanite',var:'Pendant + Tennis 3mm 22"',tier:'Moissanite',platform:'Shopify',pcad:116.28,ccad:186.65,oad:0,price:579,disc:0});
+  addProductRow({prod:'Timeless XO CZ',var:'Pendant + Rope 6mm 22"',tier:'CZ',platform:'Shopify',pcad:63.80,ccad:15.00,oad:0,price:179,disc:0});
+  addProductRow({prod:'Timeless XO CZ',var:'Pendant + Tennis 3mm 22"',tier:'CZ',platform:'Shopify',pcad:63.80,ccad:68.00,oad:0,price:219,disc:0});
+}
+
+function exportCSV(){
+  const base=getBase(); const fx=parseFloat($('#fx').value)||0.74; const pack=parseFloat($('#pack').value)||0;
+  const sPct=(parseFloat($('#s_pct').value)||0)/100; const sFix=parseFloat($('#s_fix').value)||0;
+  const eBasePct=(parseFloat($('#e_basepct').value)||0)/100; const eList=parseFloat($('#e_list').value)||0; const eOffPct=(parseFloat($('#e_off').value)||0)/100; const CAC=parseFloat($('#cac').value)||0;
+  const rows=[["Product","Variant","Tier","Platform","ListPrice","Discount%","EffPrice","CM1%","CM2%","ProfitAfterCAC","TotalCAD","Landed","Fees"]];
+  $$('#products .p-card').forEach(card=>{
+    const tier=card.querySelector('.tier').value; const plat=card.querySelector('.platform').value; const prod=card.querySelector('.prod').value; const vari=card.querySelector('.vari').value;
+    const listPrice=parseFloat(card.querySelector('.price').value)||0; const disc=parseFloat(card.querySelector('.disc').value)||0; const r=1-disc/100; const P=listPrice*r;
+    const pcad=parseFloat(card.querySelector('.pcad').value)||0; const ccad=parseFloat(card.querySelector('.ccad').value)||0; const ocad=parseFloat(card.querySelector('.ocad').value)||0; const totalCad=pcad+ccad+ocad+pack; const landed=(base==='USD')? totalCad*fx: totalCad;
+    let fees=0; if(plat==='Shopify') fees=feeShopify(P,sPct,sFix); else {const useOff=plat.includes('Offsite')?eOffPct:0; fees=feeEtsy(P,eList,eBasePct,useOff);} const pre=P-fees-landed; const after=pre-CAC; const cm1=P?pre/P*100:0; const cm2=P?after/P*100:0;
+    rows.push([prod,vari,tier,plat,listPrice.toFixed(2),disc.toFixed(1),P.toFixed(2),cm1.toFixed(1),cm2.toFixed(1),after.toFixed(2),totalCad.toFixed(2),landed.toFixed(2),fees.toFixed(2)].join(','));
+  });
+  const blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='xo_pricing_final.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+function saveState(){ if(!window.localStorage) return; const rows=$$('#products .p-card').map(card=>({prod:card.querySelector('.prod').value,var:card.querySelector('.vari').value,tier:card.querySelector('.tier').value,platform:card.querySelector('.platform').value,price:card.querySelector('.price').value,disc:card.querySelector('.disc').value,round:card.querySelector('.round').value,pcad:card.querySelector('.pcad').value,ccad:card.querySelector('.ccad').value,oad:card.querySelector('.ocad').value})); const state={base:getBase(),fx:$('#fx').value,pack:$('#pack').value,s_pct:$('#s_pct').value,s_fix:$('#s_fix').value,e_basepct:$('#e_basepct').value,e_list:$('#e_list').value,e_off:$('#e_off').value,cac:$('#cac').value,t_cz:$('#t_cz').value,t_moi:$('#t_moi').value,t_el:$('#t_el').value,rows}; localStorage.setItem('xo_pricing_final',JSON.stringify(state)); }
+
+function loadState(){ if(!window.localStorage) return false; const raw=localStorage.getItem('xo_pricing_final'); if(!raw) return false; try{ const s=JSON.parse(raw); $('#base').value=s.base; $('#fx').value=s.fx; $('#pack').value=s.pack; $('#s_pct').value=s.s_pct; $('#s_fix').value=s.s_fix; $('#e_basepct').value=s.e_basepct; $('#e_list').value=s.e_list; $('#e_off').value=s.e_off; $('#cac').value=s.cac; $('#t_cz').value=s.t_cz; $('#t_moi').value=s.t_moi; $('#t_el').value=s.t_el; $('#products').innerHTML=''; (s.rows||[]).forEach(r=>addProductRow(r)); return true;}catch(e){console.error(e);return false;}}
+
+// wire
+$('#add').addEventListener('click',()=>{addProductRow({tier:'CZ',platform:'Shopify',disc:0,round:'prestige'});compute();saveState();});
+$('#suggestAll').addEventListener('click',()=>{$$('#products .p-card').forEach(c=>suggestPrice(c));saveState();});
+$('#export').addEventListener('click',exportCSV);
+['#base','#fx','#pack','#s_pct','#s_fix','#e_basepct','#e_list','#e_off','#cac','#t_cz','#t_moi','#t_el'].forEach(id=>$(id).addEventListener('input',()=>{compute();saveState();}));
+
+if(!loadState()) resetXO();
+compute();
+</script>
+</body>
+</html>
