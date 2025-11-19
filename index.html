@@ -4,21 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jewelry Pricing & Profit Calculator | Hip-Hop Jewelry</title>
-  <meta name="description" content="Free interactive jewelry pricing and profit calculator for hip-hop and custom jewelry businesses. Estimate costs, fees, margins, and profits for Etsy and Shopify.">
+  <meta name="description" content="Interactive jewelry pricing and profit calculator for jewelers and hip-hop jewelry sellers. Calculate costs, fees, discount, margins, and profits across platforms like Etsy and Shopify.">
+  <meta name="keywords" content="jewelry pricing calculator, hip-hop jewelry, profit calculator, Etsy fee calculator, Shopify fee calculator, custom jewelry pricing">
   <style>
-    body{font-family:Arial;background:#0d0d0d;color:#f5f5f5;margin:0;padding:20px;}
-    h1{font-size:24px;margin-bottom:10px;}
+    body{font-family:Arial,Helvetica,sans-serif;background:#0d0d0d;color:#f5f5f5;margin:0;padding:20px;line-height:1.4;}
+    h1{font-size:28px;margin-bottom:10px;}
+    p{margin-bottom:10px;}
     section{margin-bottom:20px;}
-    input,select{padding:6px;margin:4px 0;width:100%;}
+    input,select{padding:8px;margin:4px 0;width:100%;box-sizing:border-box;}
     label{display:block;margin-top:10px;}
-    button{padding:8px 12px;margin-top:10px;background:#4CAF50;color:white;border:none;cursor:pointer;}
-    .result{margin-top:15px;padding:10px;background:#1a1a1a;border-radius:4px;}
+    button{padding:10px 15px;margin-top:12px;background:#4CAF50;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+    button:hover{background:#45a049;}
+    .result{margin-top:15px;padding:15px;background:#1a1a1a;border-radius:4px;}
   </style>
 </head>
 <body>
 <header>
   <h1>Jewelry Pricing & Profit Calculator</h1>
-  <p>This interactive calculator helps hip-hop jewelry brands, pendant makers and custom chain sellers set profitable prices. Enter your pendant and chain costs, platform fees, discount rates, and ad spend to see your pre-ad and post-ad margins instantly. Designed for Etsy and Shopify sellers.</p>
+  <p>Use this interactive tool to calculate the cost structure and profit margins for your jewelry products. Enter your material costs, selling price, discount rate, platform, and advertising spend to understand your profitability before and after ads. This calculator is ideal for hip-hop and custom jewelry sellers on platforms like Shopify and Etsy.</p>
 </header>
 
 <main>
@@ -51,8 +54,11 @@
   </section>
 </main>
 <section>
-  <p>This calculator helps jewelers and ecommerce sellers optimize pricing by considering material costs, shipping, fees, discounts, and advertising costs. Adjust your price and discount to meet your margin goals and maximize profits.</p>
+  <p>This calculator factors in material costs, shipping and handling (assumed as a fixed pack-and-ship fee), platform transaction fees, advertising costs, and discounts. Adjust your inputs to experiment with different pricing strategies. Use the BNPL breakdown to show customers an affordable 4× payment option and decide if it supports your margin goals.</p>
 </section>
+<footer>
+  <p>Optimize your pricing to ensure healthy margins and sustainable growth. This tool is offered for educational purposes and doesn't replace professional financial advice.</p>
+</footer>
 <script>
 function calculate(){
   var pendant=parseFloat(document.getElementById('pendant').value)||0;
@@ -63,24 +69,24 @@ function calculate(){
   var platform=document.getElementById('platform').value;
   var cac=parseFloat(document.getElementById('cac').value)||0;
   var effPrice=price*(1-discount/100);
-  var pack=13; // pack and ship cost constant
+  var pack=13; // assumed pack and ship cost
   var totalCost=pendant+chain+other+pack;
   var feePct=0; var feeFixed=0;
   if(platform==='shopify'){feePct=0.029; feeFixed=0.30;}
   else if(platform==='etsy'){feePct=0.142; feeFixed=0.45;}
   else if(platform==='etsy_offsite'){feePct=0.262; feeFixed=0.45;}
-  var fees=effPrice*feePct+feeFixed;
-  var preProfit=effPrice-fees-totalCost;
-  var afterProfit=preProfit-cac;
-  var cm1=(effPrice>0)?(preProfit/effPrice*100):0;
-  var cm2=(effPrice>0)?(afterProfit/effPrice*100):0;
-  document.getElementById('effPrice').innerText='CA$'+effPrice.toFixed(2);
-  document.getElementById('fees').innerText='CA$'+fees.toFixed(2);
-  document.getElementById('preProfit').innerText='CA$'+preProfit.toFixed(2);
-  document.getElementById('afterProfit').innerText='CA$'+afterProfit.toFixed(2);
-  document.getElementById('cm1').innerText=cm1.toFixed(1)+'%';
-  document.getElementById('cm2').innerText=cm2.toFixed(1)+'%';
-  document.getElementById('bnpl').innerText='CA$'+(effPrice/4).toFixed(2)+' × 4';
+  var fees=effPrice*feePct + feeFixed;
+  var preProfit=effPrice - fees - totalCost;
+  var afterProfit=preProfit - cac;
+  var cm1 = effPrice ? (preProfit/effPrice*100) : 0;
+  var cm2 = effPrice ? (afterProfit/effPrice*100) : 0;
+  document.getElementById('effPrice').innerText='CA$' + effPrice.toFixed(2);
+  document.getElementById('fees').innerText='CA$' + fees.toFixed(2);
+  document.getElementById('preProfit').innerText='CA$' + preProfit.toFixed(2);
+  document.getElementById('afterProfit').innerText='CA$' + afterProfit.toFixed(2);
+  document.getElementById('cm1').innerText=cm1.toFixed(1) + '%';
+  document.getElementById('cm2').innerText=cm2.toFixed(1) + '%';
+  document.getElementById('bnpl').innerText='CA$' + (effPrice/4).toFixed(2) + ' × 4';
   document.getElementById('results').style.display='block';
 }
 </script>
