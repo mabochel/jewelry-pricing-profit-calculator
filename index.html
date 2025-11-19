@@ -1,94 +1,333 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jewelry Pricing & Profit Calculator | Hip-Hop Jewelry</title>
-  <meta name="description" content="Interactive jewelry pricing and profit calculator for jewelers and hip-hop jewelry sellers. Calculate costs, fees, discount, margins, and profits across platforms like Etsy and Shopify.">
-  <meta name="keywords" content="jewelry pricing calculator, hip-hop jewelry, profit calculator, Etsy fee calculator, Shopify fee calculator, custom jewelry pricing">
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#0d0d0d;color:#f5f5f5;margin:0;padding:20px;line-height:1.4;}
-    h1{font-size:28px;margin-bottom:10px;}
-    p{margin-bottom:10px;}
-    section{margin-bottom:20px;}
-    input,select{padding:8px;margin:4px 0;width:100%;box-sizing:border-box;}
-    label{display:block;margin-top:10px;}
-    button{padding:10px 15px;margin-top:12px;background:#4CAF50;color:#fff;border:none;border-radius:4px;cursor:pointer;}
-    button:hover{background:#45a049;}
-    .result{margin-top:15px;padding:15px;background:#1a1a1a;border-radius:4px;}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XO · Pricing Studio (v7)</title>
+<style>
+  :root{
+    --bg:#07080f; --panel:#0d0f18; --panel2:#13172a; --ink:#f5f7ff; --ink2:#e6e9fb; --muted:#a3aac2;
+    --grid:#232841; --accent:#caff3b; --good:#74ffa9; --warn:#ffd86a; --bad:#ff7c93;
+    --chip:#171c32; --barbg:#13182e; --barfg:#4eff9c; --barfg2:#ffcf5a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink);
+    background:radial-gradient(1000px 600px at 8% -10%, #1c2150 0, #080a15 55%, #07080f 100%);
+  }
+  header{
+    position:sticky;
+    top:0;
+    z-index:30;
+    padding:14px 16px 10px;
+    background:rgba(7,8,15,.94);
+    border-bottom:1px solid var(--grid);
+    backdrop-filter:blur(10px);
+  }
+  h1{margin:0 0 4px;font-size:20px;font-weight:650;letter-spacing:.03em}
+  .sub{color:var(--muted);font-size:13px;line-height:1.4;margin-bottom:6px}
+  main{display:flex;gap:16px;padding:16px 16px 24px;min-height:calc(100vh - 70px)}
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--grid);
+    border-radius:8px;
+    padding:14px 16px 12px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+  }
+  .panel h2{margin:0;font-size:17px;font-weight:600;letter-spacing:.02em}
+  .panel p{margin:0;font-size:13px;color:var(--muted);line-height:1.45;margin-top:4px}
+  .panel2{background:var(--panel2)}
+  fieldset{border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin:0 0 12px}
+  legend{padding:0 4px;font-size:13px;color:var(--muted)}
+  label{font-size:13px;color:var(--ink2);display:block;margin-bottom:4px}
+  input,select{width:100%;background:var(--panel2);border:1px solid var(--grid);border-radius:6px;padding:6px 8px;color:var(--ink);font-size:14px;margin-bottom:10px}
+  input::placeholder{color:var(--muted)}
+  input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{appearance:none}
+  .inline{display:flex;gap:8px}
+  .inline > div{flex:1}
+  button{background:var(--accent);color:#0e1123;border:none;border-radius:6px;padding:8px 12px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+  button:hover{background:#d6ff66}
+  table{width:100%;border-collapse:collapse;margin-top:12px}
+  th,td{border:1px solid var(--grid);padding:8px 10px;font-size:13px;text-align:center}
+  th{background:var(--panel2);color:var(--ink2)}
+  td{background:var(--panel)}
+  .totals{margin-top:auto;font-size:14px;color:var(--ink2);line-height:1.5}
+  .chip{display:inline-block;background:var(--chip);padding:4px 8px;border-radius:16px;font-size:12px;color:var(--muted);margin-left:6px}
+  .bar{height:6px;border-radius:4px;background:var(--barbg);margin-top:4px;overflow:hidden}
+  .bar-inner{height:100%;border-radius:4px}
+  @media(max-width:800px){main{flex-direction:column}}
+</style>
 </head>
 <body>
 <header>
-  <h1>Jewelry Pricing & Profit Calculator</h1>
-  <p>Use this interactive tool to calculate the cost structure and profit margins for your jewelry products. Enter your material costs, selling price, discount rate, platform, and advertising spend to understand your profitability before and after ads. This calculator is ideal for hip-hop and custom jewelry sellers on platforms like Shopify and Etsy.</p>
+  <h1>XO Pricing Studio</h1>
+  <div class="sub">Optimize product pricing and profits across Shopify & Etsy platforms – just enter costs and watch the magic</div>
 </header>
-
 <main>
-  <section>
-    <form id="calcForm">
-      <label>Pendant cost (CAD)<input type="number" id="pendant" step="0.01"></label>
-      <label>Chain cost (CAD)<input type="number" id="chain" step="0.01"></label>
-      <label>Other cost (CAD)<input type="number" id="other" step="0.01"></label>
-      <label>List price (CAD)<input type="number" id="price" step="0.01"></label>
-      <label>Discount (%)<input type="number" id="discount" step="0.01" value="0"></label>
-      <label>Platform
-        <select id="platform">
-          <option value="shopify">Shopify</option>
-          <option value="etsy">Etsy</option>
-          <option value="etsy_offsite">Etsy Offsite</option>
+  <div class="panel">
+    <h2>Settings</h2>
+    <p>Configure base currency, FX and platform fees. Defaults provided.</p>
+    <div class="inline">
+      <div>
+        <label for="base">Base Currency</label>
+        <select id="base">
+          <option value="CAD">CAD</option>
+          <option value="USD">USD</option>
         </select>
-      </label>
-      <label>Ad cost per sale (CAC) (CAD)<input type="number" id="cac" step="0.01" value="0"></label>
-      <button type="button" onclick="calculate()">Calculate</button>
-    </form>
-    <div id="results" class="result" style="display:none;">
-      <p><strong>Effective price after discount:</strong> <span id="effPrice"></span></p>
-      <p><strong>Platform fees:</strong> <span id="fees"></span></p>
-      <p><strong>Pre-ad profit:</strong> <span id="preProfit"></span></p>
-      <p><strong>After-ad profit:</strong> <span id="afterProfit"></span></p>
-      <p><strong>Pre-ad margin (CM1):</strong> <span id="cm1"></span></p>
-      <p><strong>After-ad margin (CM2):</strong> <span id="cm2"></span></p>
-      <p><strong>BNPL 4× payment:</strong> <span id="bnpl"></span></p>
+      </div>
+      <div>
+        <label for="fx">FX (1 CAD → ? USD)</label>
+        <input id="fx" type="number" step="0.01" placeholder="0.74" />
+      </div>
+      <div>
+        <label for="pack">Packaging Cost ($)</label>
+        <input id="pack" type="number" step="0.01" placeholder="13" />
+      </div>
     </div>
-  </section>
+    <fieldset>
+      <legend>Shopify Fees</legend>
+      <div class="inline">
+        <div>
+          <label for="s_pct">Transaction %</label>
+          <input id="s_pct" type="number" step="0.01" placeholder="2.9" />
+        </div>
+        <div>
+          <label for="s_fix">Fixed Fee ($)</label>
+          <input id="s_fix" type="number" step="0.01" placeholder="0.30" />
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Etsy Fees</legend>
+      <div class="inline">
+        <div>
+          <label for="e_list">Listing ($)</label>
+          <input id="e_list" type="number" step="0.01" placeholder="0.20" />
+        </div>
+        <div>
+          <label for="e_trans">Transaction %</label>
+          <input id="e_trans" type="number" step="0.01" placeholder="6.5" />
+        </div>
+      </div>
+      <div class="inline">
+        <div>
+          <label for="e_paypct">Payment %</label>
+          <input id="e_paypct" type="number" step="0.01" placeholder="3" />
+        </div>
+        <div>
+          <label for="e_payfix">Payment Fix ($)</label>
+          <input id="e_payfix" type="number" step="0.01" placeholder="0.25" />
+        </div>
+      </div>
+      <div>
+        <label for="e_off">Offsite Ads %</label>
+        <input id="e_off" type="number" step="0.01" placeholder="15" />
+      </div>
+    </fieldset>
+    <div>
+      <label for="cac">CAC / Ad Cost ($)</label>
+      <input id="cac" type="number" step="0.01" placeholder="20" />
+    </div>
+    <div>
+      <label for="round">Round Final Price To ($)</label>
+      <input id="round" type="number" step="1" placeholder="5" />
+    </div>
+    <div class="inline">
+      <div>
+        <label for="t_cz">CZ Tier</label>
+        <input id="t_cz" type="number" step="0.01" placeholder="1.15" />
+      </div>
+      <div>
+        <label for="t_moi">MOI Tier</label>
+        <input id="t_moi" type="number" step="0.01" placeholder="1.3" />
+      </div>
+      <div>
+        <label for="t_el">Elite Tier</label>
+        <input id="t_el" type="number" step="0.01" placeholder="1.5" />
+      </div>
+    </div>
+    <div>
+      <label for="floors">Profit Floor Levels (%)<span class="chip">comma-separated</span></label>
+      <input id="floors" type="text" placeholder="30,40,50" />
+    </div>
+  </div>
+  <div class="panel panel2">
+    <h2>Products</h2>
+    <p>Add products with costs & base price. We'll compute target price, profit & recommended tier.</p>
+    <div id="products"></div>
+    <button id="add">Add Product</button>
+    <button id="export">Export CSV</button>
+    <button id="suggestAll">Suggest Tiers for All</button>
+    <div class="totals" id="totals"></div>
+  </div>
+  <div class="panel">
+    <h2>Filters</h2>
+    <p>Filter products by channel or tier to see relevant metrics.</p>
+    <select id="filter">
+      <option value="all">All Channels</option>
+      <option value="shopify">Shopify Only</option>
+      <option value="etsy">Etsy Only</option>
+    </select>
+    <table id="summary">
+      <thead>
+        <tr>
+          <th>Channel</th>
+          <th>Total Revenue</th>
+          <th>Total Profit</th>
+          <th>Avg Margin</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </main>
-<section>
-  <p>This calculator factors in material costs, shipping and handling (assumed as a fixed pack-and-ship fee), platform transaction fees, advertising costs, and discounts. Adjust your inputs to experiment with different pricing strategies. Use the BNPL breakdown to show customers an affordable 4× payment option and decide if it supports your margin goals.</p>
-</section>
-<footer>
-  <p>Optimize your pricing to ensure healthy margins and sustainable growth. This tool is offered for educational purposes and doesn't replace professional financial advice.</p>
-</footer>
 <script>
-function calculate(){
-  var pendant=parseFloat(document.getElementById('pendant').value)||0;
-  var chain=parseFloat(document.getElementById('chain').value)||0;
-  var other=parseFloat(document.getElementById('other').value)||0;
-  var price=parseFloat(document.getElementById('price').value)||0;
-  var discount=parseFloat(document.getElementById('discount').value)||0;
-  var platform=document.getElementById('platform').value;
-  var cac=parseFloat(document.getElementById('cac').value)||0;
-  var effPrice=price*(1-discount/100);
-  var pack=13; // assumed pack and ship cost
-  var totalCost=pendant+chain+other+pack;
-  var feePct=0; var feeFixed=0;
-  if(platform==='shopify'){feePct=0.029; feeFixed=0.30;}
-  else if(platform==='etsy'){feePct=0.142; feeFixed=0.45;}
-  else if(platform==='etsy_offsite'){feePct=0.262; feeFixed=0.45;}
-  var fees=effPrice*feePct + feeFixed;
-  var preProfit=effPrice - fees - totalCost;
-  var afterProfit=preProfit - cac;
-  var cm1 = effPrice ? (preProfit/effPrice*100) : 0;
-  var cm2 = effPrice ? (afterProfit/effPrice*100) : 0;
-  document.getElementById('effPrice').innerText='CA$' + effPrice.toFixed(2);
-  document.getElementById('fees').innerText='CA$' + fees.toFixed(2);
-  document.getElementById('preProfit').innerText='CA$' + preProfit.toFixed(2);
-  document.getElementById('afterProfit').innerText='CA$' + afterProfit.toFixed(2);
-  document.getElementById('cm1').innerText=cm1.toFixed(1) + '%';
-  document.getElementById('cm2').innerText=cm2.toFixed(1) + '%';
-  document.getElementById('bnpl').innerText='CA$' + (effPrice/4).toFixed(2) + ' × 4';
-  document.getElementById('results').style.display='block';
+const $=sel=>document.querySelector(sel);
+const $$=sel=>Array.from(document.querySelectorAll(sel));
+let products=[];
+function addProduct(data={}){
+  const id=Date.now();
+  const p=document.createElement('div');
+  p.className='p-card';
+  p.innerHTML=`<div class="inline"><div><label>Pendant ($)<input type="number" step="0.01" class="pendant" /></label></div><div><label>Chain ($)<input type="number" step="0.01" class="chain" /></label></div><div><label>Other ($)<input type="number" step="0.01" class="other" /></label></div></div><div class="inline"><div><label>Price ($)<input type="number" step="0.01" class="price" /></label></div><div><label>Discount (%)<input type="number" step="0.01" class="discount" /></label></div><div><label>Platform<select class="platform"><option value="shopify">Shopify</option><option value="etsy">Etsy</option><option value="etsy_offsite">Etsy Offsite</option></select></label></div></div><div><label>Price CZ ($)<input type="number" step="0.01" class="pcad" disabled /></label></div><div><label>Price MOI ($)<input type="number" step="0.01" class="moi" disabled /></label></div><div><label>Price Elite ($)<input type="number" step="0.01" class="elite" disabled /></label></div><div><label>Tier<input type="text" class="tier" disabled /></label></div><button class="remove">Remove</button>`;
+  $('#products').appendChild(p);
+  const product={id,p};
+  products.push(product);
+  ['.pendant','.chain','.other','.price','.discount','.platform'].forEach(sel=>p.querySelector(sel).addEventListener('input', ()=> compute()));
+  p.querySelector('.remove').addEventListener('click', ()=>{
+    products=products.filter(pr=>pr.id!==product.id);
+    p.remove();
+    compute();
+  });
+  if(Object.keys(data).length){
+    p.querySelector('.pendant').value=data.pendant||'';
+    p.querySelector('.chain').value=data.chain||'';
+    p.querySelector('.other').value=data.other||'';
+    p.querySelector('.price').value=data.price||'';
+    p.querySelector('.discount').value=data.discount||'';
+    p.querySelector('.platform').value=data.platform||'shopify';
+    compute();
+  }
 }
+function compute(){
+  const base=$('#base').value;
+  const fx=parseFloat($('#fx').value)||0.74;
+  const pack=parseFloat($('#pack').value)||13;
+  const s_pct=parseFloat($('#s_pct').value)||2.9;
+  const s_fix=parseFloat($('#s_fix').value)||0.30;
+  const e_list=parseFloat($('#e_list').value)||0.20;
+  const e_trans=parseFloat($('#e_trans').value)||6.5;
+  const e_paypct=parseFloat($('#e_paypct').value)||3;
+  const e_payfix=parseFloat($('#e_payfix').value)||0.25;
+  const e_off=parseFloat($('#e_off').value)||15;
+  const cac=parseFloat($('#cac').value)||20;
+  const round=parseFloat($('#round').value)||5;
+  const t_cz=parseFloat($('#t_cz').value)||1.15;
+  const t_moi=parseFloat($('#t_moi').value)||1.3;
+  const t_el=parseFloat($('#t_el').value)||1.5;
+  const floors=$('#floors').value.split(',').map(s=>parseFloat(s.trim())).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+  let summary={shopify:{rev:0,prof:0,marginSum:0,count:0},etsy:{rev:0,prof:0,marginSum:0,count:0}};
+  products.forEach(({p})=>{
+    const pendant=parseFloat(p.querySelector('.pendant').value)||0;
+    const chain=parseFloat(p.querySelector('.chain').value)||0;
+    const other=parseFloat(p.querySelector('.other').value)||0;
+    let price=parseFloat(p.querySelector('.price').value)||0;
+    const discount=parseFloat(p.querySelector('.discount').value)||0;
+    const platform=p.querySelector('.platform').value;
+    const totalCost=pendant+chain+other+pack;
+    let effPrice=price*(1-discount/100);
+    let fees=0;
+    if(platform==='shopify') fees=effPrice*s_pct/100 + s_fix;
+    else {
+      fees=e_list + effPrice*e_trans/100 + effPrice*e_paypct/100 + e_payfix;
+      if(platform==='etsy_offsite') fees += effPrice*e_off/100;
+    }
+    const preProfit=effPrice - fees - totalCost;
+    const afterProfit=preProfit - cac;
+    const margin=effPrice ? afterProfit/effPrice*100 : 0;
+    // compute recommended tier and price suggestions
+    const basePrice=price*(base==='CAD'?1:fx);
+    const cz=basePrice*t_cz;
+    const moi=basePrice*t_moi;
+    const elite=basePrice*t_el;
+    p.querySelector('.pcad').value=roundTo(cz, round).toFixed(2);
+    p.querySelector('.moi').value=roundTo(moi, round).toFixed(2);
+    p.querySelector('.elite').value=roundTo(elite, round).toFixed(2);
+    let tier='CZ';
+    let tierPrice=cz;
+    if(moi>price) {tier='MOI'; tierPrice=moi;}
+    if(elite>price) {tier='Elite'; tierPrice=elite;}
+    if(floors.length){
+      for(let i=0;i<floors.length;i++){
+        const f=floors[i];
+        const target=totalCost/(1-f/100);
+        if(price<target) { tier=`Tier ${i+1}`; tierPrice=target; break; }
+      }
+    }
+    p.querySelector('.tier').value=tier;
+    if(platform!=='etsy_offsite'){
+      summary[platform].rev+=effPrice;
+      summary[platform].prof+=afterProfit;
+      summary[platform].marginSum+=margin;
+      summary[platform].count++;
+    }
+  });
+  // update summary table
+  const tbody=$('#summary tbody');
+  tbody.innerHTML='';
+  ['shopify','etsy'].forEach(ch=>{
+    const {rev,prof,marginSum,count}=summary[ch];
+    const row=document.createElement('tr');
+    const m=count? (marginSum/count).toFixed(1)+'%' : '0%';
+    row.innerHTML=`<td>${ch.charAt(0).toUpperCase()+ch.slice(1)}</td><td>$${rev.toFixed(2)}</td><td>$${prof.toFixed(2)}</td><td>${m}</td>`;
+    tbody.appendChild(row);
+  });
+}
+function roundTo(value, step){
+  return Math.ceil(value/step)*step;
+}
+function suggest(p){
+  const tier=p.querySelector('.tier').value;
+  if(!tier) return;
+  if(tier==='CZ'){ p.querySelector('.price').value=p.querySelector('.pcad').value; }
+  else if(tier==='MOI'){ p.querySelector('.price').value=p.querySelector('.moi').value; }
+  else { p.querySelector('.price').value=p.querySelector('.elite').value; }
+  compute();
+}
+function resetXO(){
+  products=[];
+  $('#products').innerHTML='';
+  addProduct({pendant:10, chain:10, other:0, price:100, discount:0, platform:'shopify'});
+  addProduct({pendant:20, chain:20, other:0, price:200, discount:10, platform:'etsy'});
+  addProduct({pendant:30, chain:30, other:0, price:300, discount:20, platform:'etsy_offsite'});
+  addProduct({pendant:40, chain:40, other:0, price:400, discount:30, platform:'shopify'});
+  addProduct({pendant:50, chain:50, other:0, price:500, discount:0, platform:'etsy'});
+  addProduct({pendant:60, chain:60, other:0, price:600, discount:5, platform:'etsy_offsite'});
+  addProduct({pendant:70, chain:70, other:0, price:700, discount:15, platform:'shopify'});
+  addProduct({pendant:80, chain:80, other:0, price:800, discount:25, platform:'etsy'});
+  addProduct({pendant:90, chain:90, other:0, price:900, discount:35, platform:'etsy_offsite'});
+  addProduct({pendant:100, chain:100, other:0, price:1000, discount:40, platform:'shopify'});
+}
+$('#add').addEventListener('click', ()=> addProduct());
+$('#export').addEventListener('click', ()=>{ alert('Export stub – CSV export can be added here.'); });
+$('#suggestAll').addEventListener('click', ()=> $$('#products .p-card').forEach(c=> suggest(c)) );
+$('#filter').addEventListener('change', compute);
+['#base','#fx','#pack','#s_pct','#s_fix','#e_list','#e_trans','#e_paypct','#e_payfix','#e_off','#cac','#round','#t_cz','#t_moi','#t_el','#floors']
+  .forEach(id=> $(id).addEventListener('input', compute));
+
+$('#base').addEventListener('change', ()=>{
+  const fx=parseFloat($('#fx').value)||0.74;
+  if($('#base').value==='CAD'){ $('#s_fix').value=(0.30/fx).toFixed(2); $('#e_list').value=(0.20/fx).toFixed(2); $('#e_payfix').value=(0.25/fx).toFixed(2); }
+  else { $('#s_fix').value='0.30'; $('#e_list').value='0.20'; $('#e_payfix').value='0.25'; }
+  compute();
+});
+
+resetXO();
+compute();
 </script>
 </body>
 </html>
