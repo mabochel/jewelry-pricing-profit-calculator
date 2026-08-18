@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <title>Project Vault Review Coach</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">Project Vault Review Coach<span>Docs • Slides • AI Slop</span></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="printBtn" aria-label="Open one-sheets">▤</button>
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <div class="compliance-note"><b>Study / prep tool.</b> Task or assessment instructions always win. Do not enter confidential task content; use generic issue labels only.</div>
+
+    <main>
+      <section class="screen active" data-screen="start" id="startScreen"></section>
+      <section class="screen" data-screen="docs" id="docsScreen"></section>
+      <section class="screen" data-screen="slides" id="slidesScreen"></section>
+      <section class="screen" data-screen="slop" id="slopScreen"></section>
+      <section class="screen" data-screen="practice" id="practiceScreen"></section>
+      <section class="screen" data-screen="sheets" id="sheetsScreen"></section>
+      <section class="screen" data-screen="help" id="helpScreen"></section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Primary navigation">
+    <button data-go="start" class="active"><span>⌂</span>Start</button>
+    <button data-go="docs"><span>▤</span>Docs</button>
+    <button data-go="slides"><span>▣</span>Slides</button>
+    <button data-go="slop"><span>✦</span>AI Slop</button>
+    <button data-go="practice"><span>✓</span>Practice</button>
+  </nav>
+
+  <div id="printRoot" aria-hidden="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>
