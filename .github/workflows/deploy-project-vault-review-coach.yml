@@ -1,0 +1,28 @@
+name: Deploy Project Vault Review Coach
+
+on:
+  push:
+    branches:
+      - docs-review-coach
+    paths:
+      - 'project-vault-review-coach/**'
+      - '.github/workflows/deploy-project-vault-review-coach.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Deploy static app to Netlify
+        working-directory: project-vault-review-coach
+        run: >-
+          npx -y @netlify/mcp@latest
+          --site-id 8fcb65c9-289f-4611-8cce-44d4d27ab0c9
+          --proxy-path "https://netlify-mcp.netlify.app/proxy/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..X7VYWcDUdiuFQeuX.Dg8KfHuJYpHixO6DLAdRdBZZdLv_mDrA7xPvd8zyVCuPcF905wT1mqO8KDKT3w7ngnjvFBISJCGbxg2V2bi2nfe8eziGDdGQRQftbNgpbnrdz6db2Vv8DAHkDHAojioNrVKbraC8rSnfmz-U9Pzbps03_XRezBr3rwN_mnIxKGkRXdvJE41Viv41UWCA52_vhENC2UY0vfRY3yih9bOLpMqj1OGwYAn8ikIjOqzWLOnxUs01JV5t9EjxAtT6ysvUinzLOEW9boGOhTbdu-hATG3G7XWHWLdAp81qocqR2pJ3126oJ4c9OIZ6Pqh9gw2lIFa7l1K1FsSNZT7SmnDhMUaoI57tqEwC4ILXGgbplUCZ2vrjhmmr2FhB7sAZmwhhJuR6hJGf.R-AMkBAYPlFyMAaG-STZuQ"
